@@ -1,10 +1,10 @@
 ;;; scroll-1.el --- bind j and k to scroll the window up and down
 
-;; Copyright 2005, 2008, 2009, 2010 Kevin Ryde
+;; Copyright 2005, 2008, 2009, 2010, 2012 Kevin Ryde
 
 ;; Author: Kevin Ryde <user42@zip.com.au>
-;; Version: 4
-;; Keywords: convenience
+;; Version: 5
+;; Keywords: convenience, scroll
 ;; URL: http://user42.tuxfamily.org/scroll-1/index.html
 ;; EmacsWiki: Scrolling
 
@@ -56,8 +56,17 @@
 ;; Version 3 - autoload cookie for scroll-1-view-keybindings too
 ;; Version 4 - scroll-1-view-keybindings load 'view, so usable anywhere
 ;;           - force scroll-preserve-screen-position for better across images
+;; Version 5 - use `ignore-errors', quieten byte compiler a bit
 
 ;;; Code:
+
+(eval-when-compile
+  (require 'cl)) ;; for `ignore-errors'
+
+(defvar view-mode-map) ;; from view.el in Emacs, or view-less.el in XEmacs21
+
+;; not in xemacs21, quieten its byte compiler for the let-binding
+(defvar scroll-preserve-screen-position)
 
 ;;;###autoload
 (defun scroll-1-down ()
@@ -120,8 +129,8 @@ need `scroll-1-view-keybindings' there."
 
   (interactive)
   (or (boundp 'view-mode-map)
-      (condition-case nil (require 'view)      (error nil))  ;; emacs
-      (condition-case nil (require 'view-less) (error nil))) ;; xemacs
+      (ignore-errors (require 'view))       ;; emacs
+      (ignore-errors (require 'view-less))) ;; xemacs
   (define-key view-mode-map "j" 'scroll-1-up)
   (define-key view-mode-map "k" 'scroll-1-down))
 
@@ -139,6 +148,8 @@ need `scroll-1-view-keybindings' there."
 (custom-add-option 'view-mode-hook        'scroll-1-view-keybindings)
 ;;;###autoload
 (custom-add-option 'w3m-mode-hook         'scroll-1-keybindings)
+
+;; LocalWords: keybindings
 
 (provide 'scroll-1)
 
