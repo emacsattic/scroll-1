@@ -1,9 +1,9 @@
 ;;; scroll-1.el --- bind j and k to scroll the window up and down
 
-;; Copyright 2005, 2008, 2009, 2010, 2012 Kevin Ryde
+;; Copyright 2005, 2008, 2009, 2010, 2012, 2013, 2014 Kevin Ryde
 
 ;; Author: Kevin Ryde <user42@zip.com.au>
-;; Version: 5
+;; Version: 8
 ;; Keywords: convenience, scroll
 ;; URL: http://user42.tuxfamily.org/scroll-1/index.html
 ;; EmacsWiki: Scrolling
@@ -41,9 +41,10 @@
 ;;
 ;; then the mode hooks where you want it, for example
 ;;
-;;     (add-hook 'Info-mode-hook 'scroll-1-keybinding)
-;;     (add-hook 'Man-mode-hook  'scroll-1-keybinding)
-;;     (add-hook 'view-mode-hook 'scroll-1-view-keybinding)
+;;     (add-hook 'Info-mode-hook 'scroll-1-keybindings)
+;;     (add-hook 'view-mode-hook 'scroll-1-view-keybindings)
+;;     (add-hook 'Man-mode-hook    'scroll-1-keybindings) ;; emacs
+;;     (add-hook 'Manual-mode-hook 'scroll-1-keybindings) ;; xemacs21
 ;;
 ;; The autoload cookies below make the functions available and add some
 ;; `customize' options if you know how to use update-file-autoloads etc.
@@ -57,6 +58,9 @@
 ;; Version 4 - scroll-1-view-keybindings load 'view, so usable anywhere
 ;;           - force scroll-preserve-screen-position for better across images
 ;; Version 5 - use `ignore-errors', quieten byte compiler a bit
+;; Version 6 - custom-add-option for xemacs Manual-mode-hook
+;; Version 7 - correction to sample code bits as per Xol Odho
+;; Version 8 - good in help modes, though not xemacs apropos-mode-hook
 
 ;;; Code:
 
@@ -98,7 +102,7 @@ If you use `customize' then `scroll-1-keybindings' is shown in
 some likely mode hooks.  Otherwise the setup in your .emacs is as
 simple as for example
 
-    (add-hook 'dictionary-mode-hook 'scroll-1-keybinding)
+    (add-hook 'dictionary-mode-hook 'scroll-1-keybindings)
 
 You can also `M-x scroll-1-keybindings' interactively as a
 one-off for some mode (though you'll have to attempt an
@@ -108,6 +112,15 @@ j and k are the style of the accursed e-VI-l one, but they're
 also handy if you touch-type, and follow the \"less\" program if
 that's your pager in the shell.
 
+----
+For reference, in XEmacs 21.4 there's some dodginess in
+apropos.el which makes its `apropos-mode-hook' unsuitable for
+`scroll-1-keybindings'.  When `M-x apropos' creates an apropos
+buffer it runs `apropos-mode-hook' before `use-local-keymap' for
+the buffer, so `scroll-1-keybindings' sees nil
+`current-local-map'.
+
+----
 The scroll-1 home page is
 URL `http://user42.tuxfamily.org/scroll-1/index.html'"
 
@@ -134,6 +147,11 @@ need `scroll-1-view-keybindings' there."
   (define-key view-mode-map "j" 'scroll-1-up)
   (define-key view-mode-map "k" 'scroll-1-down))
 
+;;-----------------------------------------------------------------------------
+;; Some modes where scroll-1 keybindings are good.
+;;
+;;;###autoload
+(custom-add-option 'apropos-mode-hook     'scroll-1-keybindings)
 ;;;###autoload
 (custom-add-option 'compilation-mode-hook 'scroll-1-keybindings)
 ;;;###autoload
@@ -141,13 +159,22 @@ need `scroll-1-view-keybindings' there."
 ;;;###autoload
 (custom-add-option 'dictionary-mode-hook  'scroll-1-keybindings)
 ;;;###autoload
-(custom-add-option 'Info-mode-hook        'scroll-1-keybindings)
+(custom-add-option 'finder-mode-hook      'scroll-1-keybindings)
 ;;;###autoload
-(custom-add-option 'Man-mode-hook         'scroll-1-keybindings)
+(custom-add-option 'help-mode-hook        'scroll-1-keybindings)
+;;;###autoload
+(custom-add-option 'Man-mode-hook         'scroll-1-keybindings) ;; emacs
+;;;###autoload
+(custom-add-option 'Manual-mode-hook      'scroll-1-keybindings) ;; xemacs21
+;;;###autoload
+(custom-add-option 'Info-mode-hook        'scroll-1-keybindings)
 ;;;###autoload
 (custom-add-option 'view-mode-hook        'scroll-1-view-keybindings)
 ;;;###autoload
 (custom-add-option 'w3m-mode-hook         'scroll-1-keybindings)
+
+
+;;-----------------------------------------------------------------------------
 
 ;; LocalWords: keybindings
 
