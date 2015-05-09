@@ -1,9 +1,9 @@
 ;;; scroll-1.el --- bind j and k to scroll the window up and down
 
-;; Copyright 2005, 2008, 2009, 2010, 2012, 2013, 2014 Kevin Ryde
+;; Copyright 2005, 2008, 2009, 2010, 2012, 2013, 2014, 2015 Kevin Ryde
 
-;; Author: Kevin Ryde <user42@zip.com.au>
-;; Version: 8
+;; Author: Kevin Ryde <user42_kevin@yahoo.com.au>
+;; Version: 9
 ;; Keywords: convenience, scroll
 ;; URL: http://user42.tuxfamily.org/scroll-1/index.html
 ;; EmacsWiki: Scrolling
@@ -24,8 +24,8 @@
 
 ;;; Commentary:
 
-;; This spot of code sets up keys j and k to scroll the window up or down
-;; one line in chosen major modes.
+;; This spot of code binds keys j and k to scroll the window up or down one
+;; line in chosen major modes.
 
 ;;; Emacsen:
 
@@ -46,9 +46,10 @@
 ;;     (add-hook 'Man-mode-hook    'scroll-1-keybindings) ;; emacs
 ;;     (add-hook 'Manual-mode-hook 'scroll-1-keybindings) ;; xemacs21
 ;;
-;; The autoload cookies below make the functions available and add some
-;; `customize' options if you know how to use update-file-autoloads etc.
-;; The autoloads end up the same size as the whole file!
+;; There's autoload cookies below for the functions and some `customize'
+;; options if you install via `M-x package-install' or know how to use
+;; `update-file-autoloads'.  The autoloads are almost as big as the whole
+;; file!
 
 ;;; History:
 
@@ -61,11 +62,13 @@
 ;; Version 6 - custom-add-option for xemacs Manual-mode-hook
 ;; Version 7 - correction to sample code bits as per Xol Odho
 ;; Version 8 - good in help modes, though not xemacs apropos-mode-hook
+;; Version 9 - cl macros only when needed
 
 ;;; Code:
 
 (eval-when-compile
-  (require 'cl)) ;; for `ignore-errors'
+  (unless (fboundp 'ignore-errors)
+    (require 'cl))) ;; for `ignore-errors'
 
 (defvar view-mode-map) ;; from view.el in Emacs, or view-less.el in XEmacs21
 
